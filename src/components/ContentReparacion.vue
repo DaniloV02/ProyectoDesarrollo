@@ -1,6 +1,5 @@
 <template>
   <main class="flex-1 p-6 bg-white overflow-y-auto">
-    <!-- Buscar cliente -->
     <div class="mb-4">
       <input
         type="text"
@@ -9,7 +8,6 @@
       />
     </div>
 
-    <!-- Tabla -->
     <div class="border rounded mb-6">
       <table class="w-full text-sm border-collapse">
         <thead class="bg-gray-200">
@@ -36,7 +34,6 @@
       </button>
     </div>
 
-    <!-- Formulario -->
     <div class="grid grid-cols-2 gap-4">
       <div>
         <label>Modelo del teléfono</label>
@@ -95,13 +92,17 @@ export default {
 
 <style scoped>
 main {
-  padding: 80px 24px 24px; /* espacio para el header fijo */
-  background-color: #f4f6f8;
+  padding: 80px 24px 24px; 
+  background-color: #ffffff; 
   font-family: 'Segoe UI', sans-serif;
   color: #333;
+
+  max-width: 1000px;   
+  margin: 0 auto;      
+  border-radius: 8px;  
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
 }
 
-/* Buscar cliente */
 input[placeholder="Buscar cliente"] {
   border: 1px solid #ccc;
   padding: 6px 10px;
@@ -116,8 +117,8 @@ input[placeholder="Buscar cliente"]:focus {
   box-shadow: 0 0 4px rgba(0, 102, 204, 0.4);
   outline: none;
 }
+ 
 
-/* Tabla */
 table {
   border-collapse: collapse;
   width: 100%;
@@ -178,7 +179,7 @@ button.bg-gray-400:hover {
   background-color: #5a6268;
 }
 
-/* Formularios en columnas */
+
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -186,7 +187,7 @@ button.bg-gray-400:hover {
   margin-top: 16px;
 }
 
-/* Inputs, select y textarea */
+
 input[type="text"],
 select,
 textarea {
@@ -207,7 +208,7 @@ textarea:focus {
   outline: none;
 }
 
-/* Labels */
+
 label {
   font-weight: 500;
   font-size: 14px;
@@ -216,7 +217,7 @@ label {
   color: #004080;
 }
 
-/* Radios */
+
 input[type="radio"] {
   margin-right: 4px;
   accent-color: #0066cc;
@@ -228,7 +229,7 @@ p {
   color: #004080;
 }
 
-/* Margen entre botones principales */
+
 .flex > button {
   min-width: 120px;
 }

@@ -59,10 +59,10 @@ export default {
 
 <style scoped>
 .content-reporte {
-  margin-left: 220px; /* ancho del sidebar */
-  margin-top: 60px; /* altura del header */
+  margin-left: 220px; 
+  margin-top: 60px; 
   padding: 20px;
-  min-height: calc(100vh - 100px); /* header + footer */
+  min-height: calc(100vh - 100px); 
   background: #f5f5f5;
 }
 

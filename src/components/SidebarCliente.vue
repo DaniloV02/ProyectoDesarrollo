@@ -16,7 +16,7 @@
           <ul class="submenu">
             <li><router-link to="/productos">Producto</router-link></li>
             <li><router-link to="/clientes">Cliente</router-link></li>
-            <li><router-link to="/agregar/proveedor">Proveedor</router-link></li>
+            <li><router-link to="/proveedor">Proveedor</router-link></li>
           </ul>
         </li>
       </ul>

@@ -17,8 +17,6 @@ import SiderbarProductos from '@/components/SiderbarProductos.vue';
 
 
 
-
-
 export default {
   name: "ProductosView",
   components: {

@@ -6,8 +6,8 @@
 
 <script>
 export default {
-  name: "FooterReporte"
-};
+  name: "FooterProveedor"
+}
 </script>
 
 <style scoped>
@@ -15,7 +15,7 @@ export default {
   background: #1c1c1c;
   color: #ccc;
   text-align: center;
-  padding: 1px 20px;
+  padding: 12px 20px;
   font-size: 14px;
   position: fixed;
   bottom: 0;

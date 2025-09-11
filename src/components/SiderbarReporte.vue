@@ -26,8 +26,8 @@
 
 <script>
 export default {
-  name: "SidebarCentral"
-}
+  name: "SidebarReporte",
+};
 </script>
 
 <style scoped>

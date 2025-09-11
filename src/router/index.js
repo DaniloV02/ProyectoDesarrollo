@@ -3,6 +3,9 @@ import HomeView from '../views/HomeView.vue'
 import ReparacionView from '../views/ReparacionView.vue'
 import ClienteView from '../views/ClienteView.vue'
 import ProductosView from '@/views/ProductosView.vue'
+import ReporteView from '@/views/ReporteView.vue'
+import AccesoriosView from '@/views/AccesoriosView.vue'
+import ProveedorView from '@/views/ProveedorView.vue'
 
 const routes = [
   {
@@ -29,7 +32,23 @@ const routes = [
     path: '/productos',
     name: 'productos',
     component: ProductosView // agregamos la ruta de productos
+  },
+  {
+    path: '/Reportes',
+    name: 'Reportes',
+    component: ReporteView
+  },
+  {
+    path: '/accesorios',
+    name: 'accesorios',
+    component: AccesoriosView
+  },
+  {
+    path: '/proveedor',
+    name: 'proveedor',
+    component: ProveedorView
   }
+  
 ]
 
 const router = createRouter({

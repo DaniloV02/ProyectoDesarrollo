@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  name: "SidebarCentral"
+  name: "SidebarProveedor"
 }
 </script>
 
