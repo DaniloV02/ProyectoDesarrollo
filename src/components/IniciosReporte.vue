@@ -8,18 +8,49 @@
       />
       <h1 class="empresa">Empresa X</h1>
     </div>
+
     <div class="user-section">
       <div class="user-info">
-        <span class="label">Nombre:</span> Fernando
+        <span class="label">Nombre:</span> {{ nombreUsuario }}
       </div>
-      <button class="logout" title="Cerrar sesión">✖</button>
+      <button class="login-btn" title="Iniciar sesión" @click="irLogin">
+        {{ estaLogueado ? 'Cerrar sesión' : 'Login' }}
+      </button>
     </div>
   </header>
 </template>
 
 <script>
 export default {
-  name: "IniciosReporte"
+  name: "IniciosReporte",
+  data() {
+    return {
+      nombreUsuario: "Invitado",
+      estaLogueado: false
+    };
+  },
+  mounted() {
+    // 🔹 Leer usuario del localStorage
+    const usuarioActivo = JSON.parse(localStorage.getItem("usuarioActivo"));
+    if (usuarioActivo && usuarioActivo.nombre) {
+      this.nombreUsuario = usuarioActivo.nombre;
+      this.estaLogueado = true;
+    }
+  },
+  methods: {
+    irLogin() {
+      if (this.estaLogueado) {
+        // 🔹 Si ya está logueado, cerrar sesión
+        localStorage.removeItem("usuarioActivo");
+        this.nombreUsuario = "Invitado";
+        this.estaLogueado = false;
+        this.$router.push("/");
+      } else {
+        // 🔹 Si no ha iniciado sesión, ir al login
+        this.$router.push("/login");
+      }
+    }
+  }
 };
 </script>
 
@@ -82,17 +113,21 @@ export default {
   color: #004080;
 }
 
-.logout {
-  background: transparent;
+.login-btn {
+  background: #ffcc00;
   border: none;
-  font-size: 20px;
-  color: white;
+  color: #003366;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: transform 0.2s, color 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  transition: background 0.3s, transform 0.2s;
 }
 
-.logout:hover {
-  color: #ffcc00;
-  transform: scale(1.2);
+.login-btn:hover {
+  background: #ffdb4d;
+  transform: scale(1.05);
 }
 </style>

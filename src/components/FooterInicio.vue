@@ -1,0 +1,28 @@
+<template>
+  <footer class="footer">
+    © 2025 Empresa X - Todos los derechos reservados
+  </footer>
+</template>
+
+<script>
+export default {
+  name: "FooterInicio.vue"
+};
+</script>
+
+<style scoped>
+.footer {
+  background: #1c1c1c;
+  color: #ccc;
+  text-align: center;
+  padding: 1px 20px;
+  font-size: 14px;
+  position: fixed;
+  bottom: 0;
+  left: 220px; 
+  width: calc(100% - 220px);
+  height: 40px;
+  line-height: 16px;
+  box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
+}
+</style>

@@ -6,6 +6,8 @@ import ProductosView from '@/views/ProductosView.vue'
 import ReporteView from '@/views/ReporteView.vue'
 import AccesoriosView from '@/views/AccesoriosView.vue'
 import ProveedorView from '@/views/ProveedorView.vue'
+import LoginView from '@/views/LoginView.vue'
+import RegistroView from '@/views/RegistroView.vue'
 
 const routes = [
   {
@@ -47,6 +49,16 @@ const routes = [
     path: '/proveedor',
     name: 'proveedor',
     component: ProveedorView
+  },
+  {
+    path: '/Login',
+    name: 'Login',
+    component: LoginView
+  },
+    {
+    path: '/register',
+    name: 'register',
+    component: RegistroView
   }
   
 ]
