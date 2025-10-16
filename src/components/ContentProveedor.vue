@@ -106,7 +106,6 @@
 <script>
 import { ref, watch } from "vue";
 
-// ✅ Importar PrimeVue components
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import DataTable from "primevue/datatable";
@@ -125,7 +124,6 @@ export default {
   setup() {
     const busqueda = ref("");
     const proveedorSeleccionado = ref(null);
-    // editingKey guarda el documento original mientras editas (útil si cambias documento)
     const editingKey = ref(null);
 
     const proveedores = ref([
@@ -165,22 +163,20 @@ export default {
       { label: "Teléfono", model: "telefono", type: "text" },
     ];
 
-    // Cuando cambie la selección en la tabla, copiar datos al formulario
     watch(proveedorSeleccionado, (newVal) => {
       if (newVal) {
         form.value = { ...newVal }; // cargar datos en formulario
         editingKey.value = newVal.documento ?? null; // guardar clave original
       }
-      // si se deselecciona (newVal === null) dejamos el formulario tal cual (no se borra)
+      
     });
 
-    // ➕ AGREGAR PROVEEDOR
     const agregarProveedor = () => {
       if (form.value.nombre.trim() === "") {
         alert("Por favor ingresa el nombre del proveedor.");
         return;
       }
-      // evitar duplicados por documento
+      
       if (
         form.value.documento &&
         proveedores.value.some((p) => p.documento === form.value.documento)
@@ -192,32 +188,25 @@ export default {
       limpiarFormulario();
     };
 
-    // ✏️ EDITAR PROVEEDOR (ahora NO borra el formulario)
     const editarProveedor = () => {
       if (!proveedorSeleccionado.value && !editingKey.value) {
         alert("Por favor selecciona un proveedor de la tabla para editar.");
         return;
       }
 
-      // Buscar por la clave guardada (editingKey) para ubicar el índice correcto
       const key = editingKey.value ?? proveedorSeleccionado.value.documento;
       const index = proveedores.value.findIndex((p) => p.documento === key);
 
       if (index !== -1) {
-        // Actualizar el registro en el array con los valores del formulario
         proveedores.value[index] = { ...form.value };
-        // Actualizar la selección para que siga indicando el mismo registro (actualizado)
         proveedorSeleccionado.value = proveedores.value[index];
-        // actualizar editingKey para el caso en que el documento haya cambiado
         editingKey.value = form.value.documento ?? null;
         alert("Proveedor actualizado correctamente.");
-        // NO llamamos a limpiarFormulario() — el formulario queda con los datos editados
       } else {
         alert("No se encontró el proveedor seleccionado.");
       }
     };
 
-    // 🗑️ ELIMINAR PROVEEDOR
     const eliminarProveedor = () => {
       if (!proveedorSeleccionado.value) {
         alert("Por favor selecciona un proveedor para eliminar.");
@@ -239,7 +228,6 @@ export default {
       }
     };
 
-    // 🔍 BUSCAR PROVEEDOR
     const buscarProveedor = () => {
       if (!busqueda.value.trim()) {
         alert("Por favor ingresa un nombre o documento para buscar.");
@@ -261,7 +249,6 @@ export default {
       }
     };
 
-    // 🧹 LIMPIAR FORMULARIO
     const limpiarFormulario = () => {
       for (const key in form.value) form.value[key] = "";
     };
