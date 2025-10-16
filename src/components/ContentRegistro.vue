@@ -74,7 +74,6 @@ export default {
   },
   methods: {
     registrar() {
-      // Validaciones básicas
       if (!this.nombre || !this.usuario || !this.contrasena || !this.confirmar) {
         this.error = "Todos los campos son obligatorios";
         this.mensaje = "";
@@ -87,7 +86,6 @@ export default {
         return;
       }
 
-      // Guardar usuario en localStorage
       const nuevoUsuario = {
         nombre: this.nombre,
         usuario: this.usuario,
