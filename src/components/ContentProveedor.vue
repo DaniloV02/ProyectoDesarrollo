@@ -165,8 +165,8 @@ export default {
 
     watch(proveedorSeleccionado, (newVal) => {
       if (newVal) {
-        form.value = { ...newVal }; // cargar datos en formulario
-        editingKey.value = newVal.documento ?? null; // guardar clave original
+        form.value = { ...newVal }; 
+        editingKey.value = newVal.documento ?? null; 
       }
       
     });
