@@ -104,12 +104,7 @@
 </template>
 
 <script>
-<<<<<<< HEAD
 import { ref, watch, onMounted } from "vue";
-=======
-import { ref, watch } from "vue";
-
->>>>>>> 1036e84b3c3379336f75234a0c9da7f509660905
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import DataTable from "primevue/datatable";
@@ -154,7 +149,7 @@ export default {
       { label: "Teléfono", model: "telefono", type: "text" },
     ];
 
-<<<<<<< HEAD
+    // Guardar en localStorage cada vez que cambia la lista
     watch(
       proveedores,
       (newVal) => {
@@ -163,19 +158,12 @@ export default {
       { deep: true }
     );
 
+    // Actualizar formulario al seleccionar proveedor
     watch(proveedorSeleccionado, (newVal) => {
       if (newVal) {
         form.value = { ...newVal };
         editingKey.value = newVal.documento ?? null;
       }
-=======
-    watch(proveedorSeleccionado, (newVal) => {
-      if (newVal) {
-        form.value = { ...newVal }; 
-        editingKey.value = newVal.documento ?? null; 
-      }
-      
->>>>>>> 1036e84b3c3379336f75234a0c9da7f509660905
     });
 
     const agregarProveedor = () => {
@@ -183,10 +171,6 @@ export default {
         alert("Por favor ingresa el nombre del proveedor.");
         return;
       }
-<<<<<<< HEAD
-=======
-      
->>>>>>> 1036e84b3c3379336f75234a0c9da7f509660905
       if (
         form.value.documento &&
         proveedores.value.some((p) => p.documento === form.value.documento)
@@ -259,9 +243,10 @@ export default {
 
     const limpiarFormulario = () => {
       for (const key in form.value) form.value[key] = "";
+      proveedorSeleccionado.value = null;
+      editingKey.value = null;
     };
 
-  
     onMounted(() => {
       const data = localStorage.getItem("proveedores");
       if (data) {
