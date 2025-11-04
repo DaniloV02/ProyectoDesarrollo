@@ -104,9 +104,7 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
-
-// ✅ Importar PrimeVue components
+import { ref, watch, onMounted } from "vue";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import DataTable from "primevue/datatable";
@@ -117,7 +115,7 @@ export default {
   name: "ContentProveedor",
   components: {
     InputText,
-    AppButton: Button, // nombres multi-word para ESLint
+    AppButton: Button,
     DataTable,
     Column,
     AppCard: Card,
@@ -125,25 +123,11 @@ export default {
   setup() {
     const busqueda = ref("");
     const proveedorSeleccionado = ref(null);
-    // editingKey guarda el documento original mientras editas (útil si cambias documento)
     const editingKey = ref(null);
 
-    const proveedores = ref([
-      {
-        nombre: "Proveedor 1",
-        razon: "Empresa ABC",
-        correo: "correo@abc.com",
-        documento: "123456789",
-        telefono: "3001234567",
-      },
-      {
-        nombre: "Proveedor 2",
-        razon: "Empresa XYZ",
-        correo: "contacto@xyz.com",
-        documento: "987654321",
-        telefono: "3019876543",
-      },
-    ]);
+    const proveedores = ref(
+      JSON.parse(localStorage.getItem("proveedores")) || []
+    );
 
     const form = ref({
       nombre: "",
@@ -165,22 +149,26 @@ export default {
       { label: "Teléfono", model: "telefono", type: "text" },
     ];
 
-    // Cuando cambie la selección en la tabla, copiar datos al formulario
+    watch(
+      proveedores,
+      (newVal) => {
+        localStorage.setItem("proveedores", JSON.stringify(newVal));
+      },
+      { deep: true }
+    );
+
     watch(proveedorSeleccionado, (newVal) => {
       if (newVal) {
-        form.value = { ...newVal }; // cargar datos en formulario
-        editingKey.value = newVal.documento ?? null; // guardar clave original
+        form.value = { ...newVal };
+        editingKey.value = newVal.documento ?? null;
       }
-      // si se deselecciona (newVal === null) dejamos el formulario tal cual (no se borra)
     });
 
-    // ➕ AGREGAR PROVEEDOR
     const agregarProveedor = () => {
       if (form.value.nombre.trim() === "") {
         alert("Por favor ingresa el nombre del proveedor.");
         return;
       }
-      // evitar duplicados por documento
       if (
         form.value.documento &&
         proveedores.value.some((p) => p.documento === form.value.documento)
@@ -190,34 +178,28 @@ export default {
       }
       proveedores.value.push({ ...form.value });
       limpiarFormulario();
+      alert("Proveedor agregado correctamente.");
     };
 
-    // ✏️ EDITAR PROVEEDOR (ahora NO borra el formulario)
     const editarProveedor = () => {
       if (!proveedorSeleccionado.value && !editingKey.value) {
-        alert("Por favor selecciona un proveedor de la tabla para editar.");
+        alert("Por favor selecciona un proveedor para editar.");
         return;
       }
 
-      // Buscar por la clave guardada (editingKey) para ubicar el índice correcto
       const key = editingKey.value ?? proveedorSeleccionado.value.documento;
       const index = proveedores.value.findIndex((p) => p.documento === key);
 
       if (index !== -1) {
-        // Actualizar el registro en el array con los valores del formulario
         proveedores.value[index] = { ...form.value };
-        // Actualizar la selección para que siga indicando el mismo registro (actualizado)
         proveedorSeleccionado.value = proveedores.value[index];
-        // actualizar editingKey para el caso en que el documento haya cambiado
         editingKey.value = form.value.documento ?? null;
         alert("Proveedor actualizado correctamente.");
-        // NO llamamos a limpiarFormulario() — el formulario queda con los datos editados
       } else {
         alert("No se encontró el proveedor seleccionado.");
       }
     };
 
-    // 🗑️ ELIMINAR PROVEEDOR
     const eliminarProveedor = () => {
       if (!proveedorSeleccionado.value) {
         alert("Por favor selecciona un proveedor para eliminar.");
@@ -232,14 +214,12 @@ export default {
           (p) => p.documento !== proveedorSeleccionado.value.documento
         );
         alert("Proveedor eliminado correctamente.");
-        // borrar selección y limpiar formulario
         proveedorSeleccionado.value = null;
         editingKey.value = null;
         limpiarFormulario();
       }
     };
 
-    // 🔍 BUSCAR PROVEEDOR
     const buscarProveedor = () => {
       if (!busqueda.value.trim()) {
         alert("Por favor ingresa un nombre o documento para buscar.");
@@ -253,18 +233,23 @@ export default {
       if (resultado) {
         alert(`Proveedor encontrado: ${resultado.nombre}`);
         proveedorSeleccionado.value = resultado;
-        // form se cargará automáticamente por el watch
-        // guardar clave original
         editingKey.value = resultado.documento ?? null;
       } else {
         alert("Proveedor no encontrado.");
       }
     };
 
-    // 🧹 LIMPIAR FORMULARIO
     const limpiarFormulario = () => {
       for (const key in form.value) form.value[key] = "";
     };
+
+  
+    onMounted(() => {
+      const data = localStorage.getItem("proveedores");
+      if (data) {
+        proveedores.value = JSON.parse(data);
+      }
+    });
 
     return {
       busqueda,
