@@ -1,16 +1,7 @@
 <template>
   <main class="flex-1 p-6 bg-white overflow-y-auto">
-    <div class="mb-6">
-      <label class="mr-2 font-medium text-blue-800">Opción de reportes:</label>
-      <select v-model="selectedOption" class="border p-2 rounded min-w-[200px]">
-        <option>Reporte de Ventas</option>
-        <option>Reporte de Clientes</option>
-        <option>Reporte de Productos</option>
-        <option>Reporte de Inventario</option>
-      </select>
-    </div>
-
     <div class="border rounded-lg shadow-sm">
+      <!-- Tabs -->
       <div class="flex border-b bg-gray-50">
         <button
           v-for="(tab, index) in tabs"
@@ -27,13 +18,16 @@
         </button>
       </div>
 
+      <!-- Tabla -->
       <div class="p-4">
         <table class="w-full text-sm border-collapse">
           <thead class="bg-gray-200">
             <tr>
               <th class="border px-3 py-2 text-center">Nombre</th>
               <th class="border px-3 py-2 text-center">Descripción</th>
-              <th class="border px-3 py-2 text-center">Valor</th>
+              <th class="border px-3 py-2 text-center">Cantidad</th>
+              <th class="border px-3 py-2 text-center">Precio Unitario</th>
+              <th class="border px-3 py-2 text-center">Valor Total</th>
               <th class="border px-3 py-2 text-center">Fecha</th>
               <th class="border px-3 py-2 text-center">Acciones</th>
             </tr>
@@ -46,7 +40,11 @@
             >
               <td class="border px-3 py-2 text-center">{{ item.nombre }}</td>
               <td class="border px-3 py-2 text-center">{{ item.descripcion }}</td>
-              <td class="border px-3 py-2 text-center">{{ item.valor }}</td>
+              <td class="border px-3 py-2 text-center">{{ item.cantidad }}</td>
+              <td class="border px-3 py-2 text-center">{{ formatoPesos(item.precio) }}</td>
+              <td class="border px-3 py-2 text-center font-semibold text-blue-800">
+                {{ formatoPesos(item.valor) }}
+              </td>
               <td class="border px-3 py-2 text-center">{{ item.fecha }}</td>
               <td class="border px-3 py-2 text-center">
                 <button
@@ -58,18 +56,26 @@
               </td>
             </tr>
             <tr v-if="datos[claveReporte][activeTab].length === 0">
-              <td colspan="5" class="text-center text-gray-500 py-3">
+              <td colspan="7" class="text-center text-gray-500 py-3">
                 Sin datos en esta pestaña
               </td>
+            </tr>
+            <tr v-if="datos[claveReporte][activeTab].length > 0" class="bg-blue-50 font-semibold">
+              <td colspan="4" class="border text-right pr-4 text-blue-900">TOTAL GENERAL:</td>
+              <td class="border text-center text-blue-900">
+                {{ formatoPesos(totalGeneral) }}
+              </td>
+              <td colspan="2" class="border"></td>
             </tr>
           </tbody>
         </table>
 
+        <!-- Formulario -->
         <div class="mt-4 border-t pt-4">
           <h3 class="font-medium mb-3 text-blue-800">
             Agregar nuevo dato a {{ tabs[activeTab].nombre }}
           </h3>
-          <div class="grid grid-cols-4 gap-3 mb-4">
+          <div class="grid grid-cols-6 gap-3 mb-4">
             <input
               v-model="nuevo.nombre"
               placeholder="Nombre"
@@ -81,8 +87,15 @@
               class="border p-2 rounded"
             />
             <input
-              v-model="nuevo.valor"
-              placeholder="Valor"
+              v-model.number="nuevo.cantidad"
+              type="number"
+              placeholder="Cantidad"
+              class="border p-2 rounded"
+            />
+            <input
+              v-model.number="nuevo.precio"
+              type="number"
+              placeholder="Precio Unitario"
               class="border p-2 rounded"
             />
             <input
@@ -90,6 +103,11 @@
               v-model="nuevo.fecha"
               class="border p-2 rounded"
             />
+            <div class="flex items-center">
+              <span class="text-blue-800 font-medium">
+                Total: {{ formatoPesos(nuevo.cantidad * nuevo.precio || 0) }}
+              </span>
+            </div>
           </div>
           <button
             @click="agregarDato"
@@ -115,8 +133,8 @@ export default {
         { nombre: "Clientes Registrados" },
         { nombre: "Productos Vendidos" },
       ],
-      nuevo: { nombre: "", descripcion: "", valor: "", fecha: "" },
-      datos: JSON.parse(localStorage.getItem("reportes")) || {
+      nuevo: { nombre: "", descripcion: "", cantidad: 0, precio: 0, valor: 0, fecha: "" },
+      datos: {
         ventas: [[], [], []],
         clientes: [[], [], []],
         productos: [[], [], []],
@@ -139,8 +157,27 @@ export default {
           return "ventas";
       }
     },
+    totalGeneral() {
+      return this.datos[this.claveReporte][this.activeTab].reduce(
+        (sum, item) => sum + item.valor,
+        0
+      );
+    },
+  },
+  mounted() {
+    const guardado = localStorage.getItem("reportes");
+    if (guardado) {
+      this.datos = JSON.parse(guardado);
+    }
   },
   methods: {
+    formatoPesos(valor) {
+      return new Intl.NumberFormat("es-CO", {
+        style: "currency",
+        currency: "COP",
+        minimumFractionDigits: 0,
+      }).format(valor);
+    },
     guardarLocal() {
       localStorage.setItem("reportes", JSON.stringify(this.datos));
     },
@@ -148,14 +185,26 @@ export default {
       if (
         !this.nuevo.nombre ||
         !this.nuevo.descripcion ||
-        !this.nuevo.valor ||
+        !this.nuevo.cantidad ||
+        !this.nuevo.precio ||
         !this.nuevo.fecha
       ) {
         alert("Por favor completa todos los campos");
         return;
       }
-      this.datos[this.claveReporte][this.activeTab].push({ ...this.nuevo });
-      this.nuevo = { nombre: "", descripcion: "", valor: "", fecha: "" };
+
+      const total = this.nuevo.cantidad * this.nuevo.precio;
+
+      this.datos[this.claveReporte][this.activeTab].push({
+        nombre: this.nuevo.nombre,
+        descripcion: this.nuevo.descripcion,
+        cantidad: this.nuevo.cantidad,
+        precio: this.nuevo.precio,
+        valor: total,
+        fecha: this.nuevo.fecha,
+      });
+
+      this.nuevo = { nombre: "", descripcion: "", cantidad: 0, precio: 0, valor: 0, fecha: "" };
       this.guardarLocal();
     },
     eliminarFila(index) {
